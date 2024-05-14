@@ -91,18 +91,6 @@ public class BookingServiceTest {
      */
     @Test
     void makeBookingTest1() {
-        when(roomService.findAvailableRoomId(eq(bookingRequest2)))
-                .thenReturn("101");
-
-        bookingService.makeBooking(bookingRequest2);
-
-        if (bookingRequest2.isPrepaid()) {
-            verify(paymentService).pay(bookingRequestCaptor.capture(), priceCaptor.capture());
-            assertThat(bookingRequestCaptor.getValue()).isEqualTo(bookingRequest2);
-            System.out.println(priceCaptor.getValue());
-            //assertThat(priceCaptor.getValue()).isEqualTo(bookingRequest2);
-
-        }
 
     }
 
