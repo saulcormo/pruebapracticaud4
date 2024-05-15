@@ -16,7 +16,7 @@ public class Main {
 
 
         // rellenar el array (aleatorios 0-4)
-        reservaMesa.rellenarMesas();
+        reservaMesa.rellenarMesas(mesas);
 
         // pintar las mesas
         reservaMesa.imprimir();
