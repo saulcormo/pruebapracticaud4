@@ -47,7 +47,14 @@ public class BookingDAOTest {
      */
     @Test
     void getAllUUIDsTest() {
-
+        BookingRequest bookingRequest1 = new BookingRequest("1", LocalDate.of(2024, 6, 10),
+                LocalDate.of(2024, 6, 16), 4, false);
+        BookingRequest bookingRequest2 = new BookingRequest("2", LocalDate.of(2024, 8, 3),
+                LocalDate.of(2024, 9, 9), 3, true);
+        bookingDAO.save(bookingRequest1);
+        bookingDAO.save(bookingRequest2);
+        Set<String> uuids = bookingDAO.getAllUUIDs();
+        assertEquals(2, uuids.size());
     }
 
 
@@ -59,7 +66,15 @@ public class BookingDAOTest {
      */
     @Test
     void getTest() {
+        BookingRequest bookingRequest1 = new BookingRequest("1", LocalDate.of(2024, 6, 10),
+                LocalDate.of(2024, 6, 16), 4, false);
+        BookingRequest bookingRequest2 = new BookingRequest("2", LocalDate.of(2024, 8, 3),
+                LocalDate.of(2024, 9, 9), 3, true);
 
+        bookingDAO.save(bookingRequest1);
+        bookingDAO.save(bookingRequest2);
+        assertEquals(bookingRequest1, bookingDAO.get("1"));
+        assertEquals(bookingRequest2, bookingDAO.get("2"));
     }
 
     /**
