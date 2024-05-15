@@ -3,8 +3,10 @@ package org.iesvdm.booking;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BookingDAOTest {
 
@@ -26,6 +28,14 @@ public class BookingDAOTest {
      */
     @Test
     void  getAllBookingRequestsTest() {
+    BookingRequest bookingRequest1 = new BookingRequest("1", LocalDate.of(2024, 6, 10),
+            LocalDate.of(2024, 6, 16), 4, false);
+     BookingRequest bookingRequest2 = new BookingRequest("2", LocalDate.of(2024, 8, 3),
+             LocalDate.of(2024, 9, 9), 3, true);
+        bookingDAO.save(bookingRequest1);
+        bookingDAO.save(bookingRequest2);
+        Collection<BookingRequest> bookingRequests = bookingDAO.getAllBookingRequests();
+        assertEquals(2, bookingRequests.size());
 
     }
 

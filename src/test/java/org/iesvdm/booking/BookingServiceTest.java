@@ -1,5 +1,6 @@
 package org.iesvdm.booking;
 
+import static java.awt.AWTEventMulticaster.add;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -65,6 +66,18 @@ public class BookingServiceTest {
     @Test
     void getAvailablePlaceCountTest() {
 
+        when(roomService.getAvailableRooms()).thenReturn(new ArrayList<>()
+        {
+            {
+                add(new Room("101", 10));
+                add(new Room("102", 10));
+                add(new Room("103", 10));
+
+            }
+        });
+
+        bookingService.getAvailablePlaceCount();
+        assertThat(bookingService.getAvailablePlaceCount()).isEqualTo(30);
     }
 
     /**
@@ -75,6 +88,12 @@ public class BookingServiceTest {
      */
      @Test
     void calculatePriceTest() {
+         bookingService.calculatePrice(bookingRequest1);
+         verify(bookingRequest1, times(1)).getDateFrom();
+         verify(bookingRequest1, times(1)).getDateTo();
+         verify(bookingRequest1, times(1)).getGuestCount();
+        assertThat(bookingService.calculatePrice(bookingRequest1)).isEqualTo(1200.0);
+
 
      }
 
@@ -91,7 +110,14 @@ public class BookingServiceTest {
      */
     @Test
     void makeBookingTest1() {
-
+        when(roomService.findAvailableRoomId(bookingRequest2)).thenReturn("101");
+        if(bookingRequest2.isPrepaid()) {
+            bookingRequestCaptor = ArgumentCaptor.forClass(BookingRequest.class);
+            priceCaptor = ArgumentCaptor.forClass(Double.class);
+            verify(paymentService).pay(bookingRequestCaptor.capture(), priceCaptor.capture());
+            assertThat(bookingRequestCaptor.getValue()).isEqualTo(bookingRequest2);
+            assertThat(priceCaptor.getValue()).isEqualTo(bookingService.calculatePrice(bookingRequest2));
+        }
     }
 
     /**
@@ -107,6 +133,17 @@ public class BookingServiceTest {
      */
     @Test
     void makeBookingTest2() {
+
+        when(roomService.findAvailableRoomId(bookingRequest2)).thenReturn("101");
+        bookingService.makeBooking(bookingRequest2);
+        roomIdCaptor = ArgumentCaptor.forClass(String.class);
+        bookingIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(roomService).bookRoom(roomIdCaptor.capture());
+        verify(mailSender).sendBookingConfirmation(bookingIdCaptor.capture());
+        inOrder(roomService, mailSender) ;{
+            verify(roomService).bookRoom(roomIdCaptor.capture());
+            verify(mailSender).sendBookingConfirmation(bookingIdCaptor.capture());
+        }
 
     }
 }
